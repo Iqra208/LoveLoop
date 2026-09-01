@@ -1,0 +1,6 @@
+{
+  "name": "SoulMatch AI",
+  "description": "A modern, AI-powered dating application with intelligent match scores, interactive personality Q&A, AI icebreakers, habit matching, and safety features.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

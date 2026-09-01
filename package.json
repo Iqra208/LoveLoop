@@ -1,0 +1,10 @@
+{
+  "name": "soulmatch-ai",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AI matchmaking web application with Vercel serverless Gemini integration",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  }
+}

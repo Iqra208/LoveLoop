@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoulMatch AI - Find Your Perfect Match</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            soulViolet: '#8B5CF6',
+            soulPink: '#EC4899',
+            soulRose: '#F43F5E',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #31103F 100%);
+      color: #F8FAFC;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+    .app-viewport {
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      max-height: 900px;
+      background: #0F172A;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      border-radius: 36px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    @media (max-width: 480px) {
+      .app-viewport {
+        border-radius: 0;
+        max-height: 100vh;
+        border: none;
+      }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .gradient-banner {
+      background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F43F5E 100%);
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .card-swipe-animation {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    <!-- Top Header -->
+    <header class="px-5 pt-5 pb-3 flex items-center justify-between z-10">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full gradient-banner flex items-center justify-center shadow-lg shadow-pink-500/30">
+          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent">SoulMatch</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="openModal('auth-modal')" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all">
+          Sign Up / Login
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Scrollable Content -->
+    <main class="flex-1 overflow-y-auto hide-scrollbar px-4 pb-24 space-y-6" id="main-content">
+      
+      <!-- Welcome Banner -->
+      <section class="rounded-3xl gradient-banner p-6 text-white shadow-xl shadow-purple-900/40 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+        
+        <div class="flex items-center justify-between mb-4">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 border border-white/30 text-[10px] font-extrabold tracking-wider uppercase backdrop-blur-md">
+            ✨ SoulMatch AI
+          </span>
+          <div class="flex gap-2">
+            <button onclick="openModal('auth-modal')" class="px-3 py-1 rounded-full bg-white text-purple-700 text-xs font-bold shadow-md hover:bg-slate-100 transition-all">
+              Sign Up
+            </button>
+            <button onclick="openModal('auth-modal')" class="px-3 py-1 rounded-full border border-white/80 text-white text-xs font-bold hover:bg-white/10 transition-all">
+              Login
+            </button>
+          </div>
+        </div>
+
+        <h1 class="text-2xl font-black leading-tight mb-2">Find Your Perfect Match</h1>
+        <p class="text-xs text-white/90 leading-relaxed mb-5">Discover deep chemistry powered by AI personality alignment, shared values, and lifestyle compatibility.</p>
+
+        <button onclick="openModal('quiz-modal')" class="w-full py-3.5 px-4 rounded-2xl bg-white text-purple-700 font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-black/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+          Start Personality Quiz
+        </button>
+      </section>
+
+
+      <!-- Genuine AI Compatibility Analysis -->
+      <section class="glass-card rounded-3xl p-4 border border-pink-500/20">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-2xl gradient-banner flex items-center justify-center text-lg shadow-lg">✨</div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <h2 class="text-sm font-extrabold text-white">Gemini AI Match Analysis</h2>
+                <p class="text-[11px] text-slate-400 mt-0.5">AI analyzes your quiz answers, values, interests and lifestyle.</p>
+              </div>
+              <span id="ai-status" class="text-[9px] font-bold px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">LIVE AI</span>
+            </div>
+            <button onclick="runAIMatch()" id="ai-match-btn" class="w-full mt-3 py-3 rounded-2xl gradient-banner text-white text-xs font-extrabold shadow-lg hover:opacity-90 transition-all">
+              🧠 Analyze My Compatibility with Gemini
+            </button>
+            <div id="ai-result" class="hidden mt-3 rounded-2xl bg-black/20 border border-white/10 p-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] text-slate-400">AI recommendation</span>
+                <span id="ai-score" class="text-lg font-black text-pink-300"></span>
+              </div>
+              <p id="ai-explanation" class="text-[11px] text-slate-300 mt-1 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Profiles Carousel -->
+      <section>
+        <div class="flex items-center justify-between mb-3 px-1">
+          <div>
+            <h2 class="text-base font-bold text-white">Featured Profiles</h2>
+            <p class="text-xs text-slate-400">Top compatible matches for you</p>
+          </div>
+          <span class="text-[11px] font-bold text-pink-400 bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 rounded-full">Top 95%+</span>
+        </div>
+
+        <div class="flex gap-4 overflow-x-auto hide-scrollbar py-2 -mx-4 px-4" id="featured-carousel">
+          <!-- Dynamically Generated via JS -->
+        </div>
+      </section>
+
+      <!-- Filter Tabs -->
+      <section>
+        <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1" id="filter-tabs">
+          <button onclick="filterProfiles('all', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-500 text-white whitespace-nowrap shadow-md">All Matches</button>
+          <button onclick="filterProfiles('nearby', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 whitespace-nowrap">Nearby</button>
+          <button onclick="filterProfiles('new', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 whitespace-nowrap">New Members</button>
+          <button onclick="filterProfiles('compatible', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 whitespace-nowrap">Most Compatible</button>
+        </div>
+      </section>
+
+      <!-- Matches Grid / List -->
+      <section class="space-y-3" id="profiles-list">
+        <!-- Dynamically Generated via JS -->
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="absolute bottom-0 left-0 right-0 h-20 bg-slate-900/90 backdrop-blur-xl border-t border-white/10 flex items-center justify-around px-2 z-20">
+      <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-pink-500 font-bold">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span class="text-[10px]">Home</span>
+      </button>
+
+      <button onclick="switchTab('matches')" id="nav-matches" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-all">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span class="text-[10px]">Matches</span>
+      </button>
+
+      <button onclick="switchTab('chat')" id="nav-chat" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-all">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+        </svg>
+        <span class="text-[10px]">Chat</span>
+      </button>
+
+      <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-all">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        <span class="text-[10px]">Profile</span>
+      </button>
+    </nav>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+      <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-white relative">
+        <button onclick="closeModal('quiz-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">✕</button>
+        <div class="text-center mb-6">
+          <span class="text-3xl">🧠</span>
+          <h3 class="text-xl font-extrabold mt-2">Personality Match Quiz</h3>
+          <p class="text-xs text-slate-300 mt-1">Answer 3 questions to unlock your highest AI match rating.</p>
+        </div>
+
+        <div id="quiz-step" class="space-y-4">
+          <div>
+            <label class="text-xs font-bold text-pink-300 block mb-2">1. What is your ideal weekend activity?</label>
+            <div class="space-y-2">
+              <button onclick="answerQuiz(1)" class="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-purple-600/50 text-xs font-semibold border border-white/10 transition-all">🌄 Outdoor Hiking & Coffee</button>
+              <button onclick="answerQuiz(1)" class="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-purple-600/50 text-xs font-semibold border border-white/10 transition-all">🎨 Art Gallery & Cozy Dining</button>
+              <button onclick="answerQuiz(1)" class="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-purple-600/50 text-xs font-semibold border border-white/10 transition-all">📚 Books & Home Cooking</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+      <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-white relative">
+        <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">✕</button>
+        <div class="text-center mb-5">
+          <h3 class="text-xl font-extrabold">Welcome to SoulMatch</h3>
+          <p class="text-xs text-slate-300 mt-1">Join thousands finding real love driven by AI</p>
+        </div>
+
+        <div class="space-y-3">
+          <input type="email" placeholder="Email Address" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-pink-500">
+          <input type="password" placeholder="Password" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-pink-500">
+          
+          <button onclick="closeModal('auth-modal')" class="w-full py-3 rounded-xl gradient-banner font-bold text-xs shadow-lg shadow-pink-500/30 hover:opacity-90 transition-all">
+            Sign In / Register
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const candidates = [
+      {
+        id: "cand_1",
+        name: "Elena Rostova",
+        age: 25,
+        profession: "UX Designer",
+        city: "San Francisco",
+        distanceKm: 3.2,
+        matchScore: 98,
+        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
+        interests: ["UI Design", "Specialty Coffee", "Yoga"]
+      },
+      {
+        id: "cand_2",
+        name: "Liam Chen",
+        age: 28,
+        profession: "Software Architect",
+        city: "Oakland",
+        distanceKm: 5.8,
+        matchScore: 94,
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
+        interests: ["Rock Climbing", "Indie Music", "Photography"]
+      },
+      {
+        id: "cand_3",
+        name: "Sophia Martinez",
+        age: 26,
+        profession: "Botanist & Artist",
+        city: "Berkeley",
+        distanceKm: 7.1,
+        matchScore: 91,
+        image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&auto=format&fit=crop&q=80",
+        interests: ["Plants", "Oil Painting", "Hiking"]
+      },
+      {
+        id: "cand_4",
+        name: "Marcus Vance",
+        age: 29,
+        profession: "Executive Chef",
+        city: "San Francisco",
+        distanceKm: 2.1,
+        matchScore: 89,
+        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80",
+        interests: ["Culinary Art", "Wine Tasting", "Jazz"]
+      }
+    ];
+
+    function renderFeatured() {
+      const container = document.getElementById('featured-carousel');
+      container.innerHTML = candidates.map(c => `
+        <div onclick="openModal('auth-modal')" class="w-64 h-80 rounded-3xl relative flex-shrink-0 overflow-hidden glass-card cursor-pointer group shadow-xl">
+          <img src="${c.image}" alt="${c.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+          
+          <div class="absolute top-3 left-3 bg-pink-500/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white flex items-center gap-1 shadow-md">
+            ⚡ ${c.matchScore}% Match
+          </div>
+
+          <div class="absolute bottom-4 left-4 right-4 text-white">
+            <h3 class="text-lg font-bold">${c.name}, ${c.age}</h3>
+            <p class="text-xs text-slate-300">${c.profession} • ${c.city}</p>
+            <div class="flex gap-1.5 mt-2">
+              ${c.interests.slice(0, 2).map(i => `<span class="text-[10px] bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full">${i}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderList(data = candidates) {
+      const container = document.getElementById('profiles-list');
+      container.innerHTML = data.map(c => `
+        <div class="glass-card rounded-2xl p-3 flex items-center gap-3 hover:bg-white/10 transition-all">
+          <img onclick="openModal('auth-modal')" src="${c.image}" alt="${c.name}" class="w-16 h-16 rounded-xl object-cover cursor-pointer">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <h4 onclick="openModal('auth-modal')" class="font-bold text-sm text-white truncate cursor-pointer">${c.name}, ${c.age}</h4>
+              <span class="text-xs font-extrabold text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded-full">${c.matchScore}%</span>
+            </div>
+            <p class="text-xs text-slate-400 truncate">${c.profession} • ${c.city}</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">${c.distanceKm} km away</p>
+            <button onclick="generateIcebreaker('${c.id}')" class="mt-2 text-[10px] font-bold text-purple-200 bg-purple-500/10 border border-purple-400/20 rounded-full px-2.5 py-1 hover:bg-purple-500/20">
+              ✨ AI Icebreaker
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function answerQuiz(step) {
+      alert("🎉 Quiz Complete! Your profile has been matched with 98% compatibility candidates.");
+      closeModal('quiz-modal');
+    }
+
+    function filterProfiles(type, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.className = 'filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 whitespace-nowrap';
+      });
+      btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-500 text-white whitespace-nowrap shadow-md';
+
+      if (type === 'nearby') {
+        renderList([...candidates].sort((a,b) => a.distanceKm - b.distanceKm));
+      } else if (type === 'compatible') {
+        renderList([...candidates].sort((a,b) => b.matchScore - a.matchScore));
+      } else {
+        renderList(candidates);
+      }
+    }
+
+    function switchTab(tab) {
+      const tabs = ['home', 'matches', 'chat', 'profile'];
+      tabs.forEach(t => {
+        const el = document.getElementById(`nav-${t}`);
+        if (t === tab) {
+          el.className = "flex flex-col items-center gap-1 text-pink-500 font-bold";
+        } else {
+          el.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-all";
+        }
+      });
+    }
+
+
+    // ---------------- Genuine Gemini AI integration ----------------
+    let quizAnswers = [];
+
+    function answerQuiz(step) {
+      const choices = [
+        "Outdoor adventure, coffee and active weekends",
+        "Art, restaurants and creative experiences",
+        "Books, home cooking and quiet quality time"
+      ];
+      quizAnswers.push(choices[(step - 1) % choices.length]);
+      if (step < 3) {
+        const q = document.getElementById('quiz-step');
+        q.innerHTML = `
+          <div>
+            <label class="text-xs font-bold text-pink-300 block mb-2">${step + 1}. What matters most in a relationship?</label>
+            <div class="space-y-2">
+              <button onclick="answerQuiz(${step + 1})" class="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-purple-600/50 text-xs font-semibold border border-white/10">💬 Open communication</button>
+              <button onclick="answerQuiz(${step + 1})" class="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-purple-600/50 text-xs font-semibold border border-white/10">🌱 Shared growth & goals</button>
+              <button onclick="answerQuiz(${step + 1})" class="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-purple-600/50 text-xs font-semibold border border-white/10">❤️ Trust, kindness & stability</button>
+            </div>
+          </div>`;
+      } else {
+        closeModal('quiz-modal');
+        document.getElementById('ai-status').textContent = 'QUIZ READY';
+        document.getElementById('ai-status').className = 'text-[9px] font-bold px-2 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20';
+        runAIMatch();
+      }
+    }
+
+    async function runAIMatch() {
+      const btn = document.getElementById('ai-match-btn');
+      const status = document.getElementById('ai-status');
+      const result = document.getElementById('ai-result');
+      const explanation = document.getElementById('ai-explanation');
+      const score = document.getElementById('ai-score');
+
+      btn.disabled = true;
+      btn.textContent = '⏳ Gemini is analyzing compatibility...';
+      status.textContent = 'ANALYZING';
+      status.className = 'text-[9px] font-bold px-2 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20';
+
+      try {
+        const response = await fetch('/api/match', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            profile: {
+              quizAnswers: quizAnswers,
+              interests: ["technology", "learning", "travel"],
+              relationshipValues: ["communication", "trust", "growth"]
+            },
+            candidates: candidates.map(c => ({
+              id: c.id, name: c.name, profession: c.profession,
+              city: c.city, interests: c.interests
+            }))
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'AI service failed');
+
+        const best = data.matches?.[0];
+        if (!best) throw new Error('No AI recommendation returned');
+
+        const candidate = candidates.find(c => c.id === best.candidateId);
+        if (candidate) {
+          candidate.matchScore = Math.max(0, Math.min(100, Number(best.score) || candidate.matchScore));
+          renderFeatured();
+          renderList();
+        }
+
+        score.textContent = `${best.score}%`;
+        explanation.textContent = `${candidate ? candidate.name : 'Top match'} — ${best.explanation}`;
+        result.classList.remove('hidden');
+        status.textContent = 'AI COMPLETE';
+        status.className = 'text-[9px] font-bold px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20';
+      } catch (error) {
+        status.textContent = 'AI ERROR';
+        status.className = 'text-[9px] font-bold px-2 py-1 rounded-full bg-red-500/10 text-red-300 border border-red-500/20';
+        explanation.textContent = error.message + ' — Add GEMINI_API_KEY in Vercel Environment Variables and redeploy.';
+        result.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🧠 Analyze My Compatibility with Gemini';
+      }
+    }
+
+    async function generateIcebreaker(candidateId) {
+      const candidate = candidates.find(c => c.id === candidateId);
+      if (!candidate) return;
+      try {
+        const response = await fetch('/api/icebreaker', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            candidate: {name: candidate.name, profession: candidate.profession, interests: candidate.interests}
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'AI service failed');
+        alert(`✨ Gemini AI Icebreaker for ${candidate.name}\\n\\n${data.icebreaker}`);
+      } catch (error) {
+        alert(`AI Icebreaker unavailable: ${error.message}`);
+      }
+    }
+
+    // Initialize
+    renderFeatured();
+    renderList();
+  </script>
+</body>
+</html>
