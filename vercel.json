@@ -1,14 +1,4 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 30
-    }
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs"
 }
